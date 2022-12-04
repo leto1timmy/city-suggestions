@@ -13,9 +13,10 @@ export async function getCitySuggestions(
   lat?: number,
   lng?: number
 ): Promise<Suggestion[]> {
-  const CITIES_FILE_NAME = "cities.csv";
-  const CITIES_FILE_PATH = "./data/";
-
+  // first call: download file from remote gist
+  // other calls: get saved file
+  const CITIES_FILE_NAME: string = "cities.csv";
+  const CITIES_FILE_PATH: string = "./data/";
   const csvFilePath: string = resolve(__dirname, CITIES_FILE_PATH);
 
   if (!existsSync(resolve(csvFilePath, CITIES_FILE_NAME))) {
@@ -37,9 +38,12 @@ export async function getCitySuggestions(
     }
   );
 
+  // CSV parsing
   const headers: string[] = ["city", "lat", "lng", "country", "population"];
   const cities: City[] = (await getDataFromCSV(fileContent, headers)) as City[];
 
+  // use token_set_ratio alg based on city field
+  // possible to adjust limit and cutoff parameters
   const options: FuzzballExtractOptions = {
     scorer: fuzz.token_set_ratio,
     processor: (city: City) => city.city,
@@ -53,6 +57,7 @@ export async function getCitySuggestions(
     return [];
   }
 
+  // calculate distance to point using haversine formula
   if (lat && lng) {
     for (const el of result) {
       el[0].distance = haversine(
@@ -62,6 +67,7 @@ export async function getCitySuggestions(
     }
   }
 
+  // sort results based on ratio and distance
   result.sort((a, b) => {
     const aRatio = a[1];
     const bRation = b[1];
@@ -75,6 +81,7 @@ export async function getCitySuggestions(
     }
   });
 
+  // suggestions mapping
   const suggestions: Suggestion[] = [];
   result.map((el) => {
     const city: City = el[0];
