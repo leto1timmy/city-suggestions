@@ -57,7 +57,7 @@ Response example
 
 ## Architecture
 
-Express application. Exposed REST endpoint. Cities suggestion based on Fuzzy search algorithm and Haversine formula to calculate distance to city.
+NodeJS/Express application. Exposed REST endpoint. Cities suggestion based on Fuzzy search algorithm and Haversine formula to calculate distance to city.
 
 ### Folder structure
 
