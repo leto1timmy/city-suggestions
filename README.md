@@ -6,7 +6,7 @@ REST API endpoint that provides auto-complete suggestions for large cities
 
 - The endpoint is exposed at `/suggestions`
 - The partial (or complete) search term is passed as a query string parameter `q`
-- The caller's location can optionally be supplied via query string parameters `latitude` and `longitude`
+- The caller's location can optionally be supplied via query string parameters `latitude` and `longitude`, than response will contain distance in meters 
 - The endpoint returns a JSON response with an array of scored suggested matches
 
 Request example
