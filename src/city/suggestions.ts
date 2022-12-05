@@ -1,11 +1,10 @@
 import fuzz, { FuzzballExtractOptions } from "fuzzball";
 import haversine from "haversine-distance";
-import { fstat, readFileSync } from "fs";
 import { resolve } from "path";
 import { Suggestion, City } from "./types";
 import { getDataFromCSV } from "./../utils/csv";
 import { getRemoteFile } from "./../utils/remoteFile";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import logger from "../utils/logger";
 
 export async function getCitySuggestions(
@@ -82,18 +81,13 @@ export async function getCitySuggestions(
   });
 
   // suggestions mapping
-  const suggestions: Suggestion[] = [];
-  result.map((el) => {
-    const city: City = el[0];
-    const score: number = el[1];
-    suggestions.push({
-      name: city.city,
-      latitude: String(city.lat),
-      longitude: String(city.lng),
-      score: score / 100,
-      distance: city.distance,
-    } as Suggestion);
-  });
-
-  return suggestions;
+  return result.map((suggestion) => {
+    return {
+      name: suggestion[0].city,
+      latitude: String(suggestion[0].lat),
+      longitude: String(suggestion[0].lng),
+      score: suggestion[1] / 100,
+      distance: suggestion[0].distance,
+    };
+  }) as Suggestion[];
 }
